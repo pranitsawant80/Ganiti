@@ -45,9 +45,9 @@ function formatNumber(value) {
   if (Math.abs(value) < 1e-12) value = 0;
   return Number(value.toPrecision(12)).toString();
 }
-function saveState() {
+function pushHistory(state) {
   history = history.slice(0, historyIndex + 1);
-  history.push({ expression, result });
+  history.push(state);
   historyIndex++;
 }
 function restoreState(state) {
@@ -86,8 +86,26 @@ function tokenize(input) {
   }
   return tokens;
 }
+const CONSTANT_NAMES = new Set(Object.keys(constants));
+function withImplicitMultiplication(tokens) {
+  const output = [];
+  for (const token of tokens) {
+    const previous = output[output.length - 1];
+    if (previous) {
+      const previousEndsValue = previous.type === 'number'
+        || (previous.type === 'name' && CONSTANT_NAMES.has(previous.value))
+        || (previous.type === 'operator' && (previous.value === ')' || previous.value === '!' || previous.value === '%'));
+      const currentStartsValue = token.type === 'number'
+        || (token.type === 'name' && token.value !== 'mod')
+        || (token.type === 'operator' && token.value === '(');
+      if (previousEndsValue && currentStartsValue) output.push({ type: 'operator', value: '*' });
+    }
+    output.push(token);
+  }
+  return output;
+}
 function evaluate(input) {
-  const tokens = tokenize(input.replace(/−/g, '-').replace(/×/g, '*').replace(/÷/g, '/'));
+  const tokens = withImplicitMultiplication(tokenize(input.replace(/−/g, '-').replace(/×/g, '*').replace(/÷/g, '/')));
   let position = 0;
   const peek = () => tokens[position];
   const take = () => tokens[position++];
@@ -97,6 +115,7 @@ function evaluate(input) {
     if (token.type === 'number') return token.value;
     if (token.type === 'name') {
       if (constants[token.value] !== undefined) return constants[token.value];
+      if (token.value === 'mod') throw new Error('mod needs a number on each side');
       if (!functions[token.value] || peek()?.value !== '(') throw new Error('Unknown function');
       take(); const value = expressionParser();
       if (take()?.value !== ')') throw new Error('Missing )');
@@ -117,14 +136,21 @@ function evaluate(input) {
   if (position < tokens.length) throw new Error('Check your expression');
   return answer;
 }
+function autoCloseParens(input) {
+  let openCount = 0;
+  for (const char of input) {
+    if (char === '(') openCount++;
+    else if (char === ')') openCount--;
+  }
+  return openCount > 0 ? input + ')'.repeat(openCount) : input;
+}
 function calculate() {
   if (!expression) return;
   try {
     const previousState = { expression, result };
-    result = evaluate(expression);
-    history = history.slice(0, historyIndex + 1);
-    history.push(previousState, { expression: formatNumber(result), result });
-    historyIndex += 2;
+    result = evaluate(autoCloseParens(expression));
+    pushHistory(previousState);
+    pushHistory({ expression: formatNumber(result), result });
     expression = formatNumber(result);
     justCalculated = true;
     updateDisplay();
