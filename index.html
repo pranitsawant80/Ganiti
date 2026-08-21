@@ -50,6 +50,15 @@
         <span class="memory-caption">Memory</span>
       </div>
 
+      <div class="variables-row">
+        <button data-value="ans">ANS</button>
+        <button data-value="x">x</button>
+        <button data-value="y">y</button>
+        <input id="variableValue" type="number" placeholder="Value">
+        <button data-variable="x" title="Store value in x">STO x</button>
+        <button data-variable="y" title="Store value in y">STO y</button>
+      </div>
+
       <div class="keypad" id="keypad">
         <button class="key function" data-value="sin(">sin</button>
         <button class="key function" data-value="cos(">cos</button>
@@ -96,6 +105,42 @@
         <button class="key" data-value=".">.</button>
       </div>
       <p class="keyboard-hint">Keyboard enabled <span>·</span> Enter to calculate</p>
+    </section>
+
+    <section class="history-panel" aria-labelledby="historyTitle">
+      <div class="history-header">
+        <div>
+          <p class="eyebrow">Your calculations</p>
+          <h2 id="historyTitle">History</h2>
+        </div>
+        <button class="history-clear" id="clearHistory" type="button">Clear all</button>
+      </div>
+      <label class="history-search">
+        <span class="sr-only">Search calculation history</span>
+        <input id="historySearch" type="search" placeholder="Search expressions or results">
+      </label>
+      <div id="historyList" class="history-list" aria-live="polite"></div>
+    </section>
+
+    <section class="toolbox" aria-label="Calculation tools">
+      <div class="tool-tabs" role="tablist">
+        <button class="tool-tab active" data-tool="explain">Explain</button>
+        <button class="tool-tab" data-tool="convert">Convert</button>
+        <button class="tool-tab" data-tool="finance">Finance</button>
+        <button class="tool-tab" data-tool="equation">Equation</button>
+        <button class="tool-tab" data-tool="graph">Graph</button>
+        <button class="tool-tab" data-tool="data">Data</button>
+        <button class="tool-tab" data-tool="programmer">Programmer</button>
+      </div>
+      <div class="tool-panel active" data-panel="explain"><p id="steps">Calculate an expression to see the working.</p></div>
+      <div class="tool-panel" data-panel="convert">
+        <div class="tool-form"><input id="convertValue" type="number" value="1"><select id="convertFrom"><option value="m">Metres</option><option value="km">Kilometres</option><option value="mi">Miles</option><option value="ft">Feet</option><option value="c">Celsius</option><option value="f">Fahrenheit</option></select><span>to</span><select id="convertTo"><option value="ft">Feet</option><option value="m">Metres</option><option value="km">Kilometres</option><option value="mi">Miles</option><option value="c">Celsius</option><option value="f">Fahrenheit</option></select><button id="convertButton">Convert</button></div><output id="convertResult">1</output>
+      </div>
+      <div class="tool-panel" data-panel="finance"><div class="tool-form"><input id="financePrincipal" type="number" placeholder="Principal"><input id="financeRate" type="number" placeholder="Annual %"><input id="financeYears" type="number" placeholder="Years"><button id="financeButton">Compound</button></div><output id="financeResult">Enter values to calculate growth.</output></div>
+      <div class="tool-panel" data-panel="equation"><div class="tool-form"><input id="equationA" type="number" placeholder="a"><span>x +</span><input id="equationB" type="number" placeholder="b"><span>=</span><input id="equationC" type="number" placeholder="c"><button id="equationButton">Solve x</button></div><output id="equationResult"></output></div>
+      <div class="tool-panel" data-panel="graph"><div class="tool-form"><input id="graphFunction" value="x^2" placeholder="x^2, sin(x), ..."><button id="graphButton">Plot</button></div><canvas id="graphCanvas" width="720" height="260" aria-label="Function graph"></canvas></div>
+      <div class="tool-panel" data-panel="data"><div class="tool-form"><input id="dataValues" placeholder="12, 15, 18, 20"><button id="statsButton">Analyze</button></div><output id="statsResult"></output><div class="tool-form matrix-form"><input id="matrixValues" placeholder="1 2; 3 4"><button id="matrixButton">Matrix determinant</button></div><output id="matrixResult"></output></div>
+      <div class="tool-panel" data-panel="programmer"><div class="tool-form"><input id="programmerValue" type="number" placeholder="Decimal value"><button id="programmerButton">Convert bases</button></div><output id="programmerResult"></output></div>
     </section>
   </main>
   <div id="toast" class="toast" role="status"></div>
