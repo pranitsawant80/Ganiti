@@ -4,7 +4,7 @@ Ganiti is a browser-based scientific calculator and math toolkit. It combines a 
 
 ## Features
 
-### Scientific calculator
+### Scientific calculator 
 
 - Arithmetic with parentheses, percentages, modulo, powers, and factorials
 - `sin`, `cos`, `tan`, inverse trigonometric functions, `log`, `ln`, `sqrt`, `cbrt`, `abs`, and reciprocal
