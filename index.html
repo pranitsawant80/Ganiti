@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101b2d">
+  <title>Orbit Calculator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="app-header">
+      <div>
+        <p class="eyebrow">PRECISION TOOL / 01</p>
+        <h1>Orbit<span>.</span></h1>
+      </div>
+      <div class="status-dot" title="Calculator ready"><span></span> READY</div>
+    </header>
+
+    <section class="calculator" aria-label="Scientific calculator">
+      <div class="display-panel">
+        <div class="display-topline">
+          <span id="memoryStatus">M 0</span>
+          <span id="angleStatus">DEG</span>
+        </div>
+        <div id="expression" class="expression" aria-label="Expression">0</div>
+        <div id="result" class="result" aria-live="polite">0</div>
+      </div>
+
+      <div class="utility-row">
+        <button class="utility-button" data-action="undo" title="Undo (Ctrl/Cmd + Z)">↶ <span>Undo</span></button>
+        <button class="utility-button" data-action="redo" title="Redo (Ctrl/Cmd + Y)">↷ <span>Redo</span></button>
+        <button class="utility-button" data-action="copy" title="Copy result">▣ <span>Copy</span></button>
+        <button class="angle-toggle" id="angleToggle" title="Toggle degree/radian mode">DEG</button>
+      </div>
+
+      <div class="memory-row">
+        <button data-action="memory-clear">MC</button>
+        <button data-action="memory-recall">MR</button>
+        <button data-action="memory-add">M+</button>
+        <button data-action="memory-subtract">M−</button>
+        <span class="memory-caption">Memory</span>
+      </div>
+
+      <div class="keypad" id="keypad">
+        <button class="key function" data-value="sin(">sin</button>
+        <button class="key function" data-value="cos(">cos</button>
+        <button class="key function" data-value="tan(">tan</button>
+        <button class="key function" data-value="log(">log</button>
+        <button class="key function" data-value="ln(">ln</button>
+        <button class="key control" data-action="clear">AC</button>
+        <button class="key control" data-action="backspace">⌫</button>
+        <button class="key operator" data-value="%">%</button>
+
+        <button class="key function" data-value="asin(">sin⁻¹</button>
+        <button class="key function" data-value="acos(">cos⁻¹</button>
+        <button class="key function" data-value="atan(">tan⁻¹</button>
+        <button class="key function" data-value="sqrt(">√</button>
+        <button class="key function" data-value="cbrt(">∛</button>
+        <button class="key function" data-value="abs(">abs</button>
+        <button class="key function" data-value="1/(">1/x</button>
+        <button class="key operator" data-value="^">xʸ</button>
+        <button class="key operator" data-value="mod">mod</button>
+
+        <button class="key constant" data-value="π">π</button>
+        <button class="key constant" data-value="e">e</button>
+        <button class="key" data-value="(">(</button>
+        <button class="key" data-value=")">)</button>
+        <button class="key" data-value="7">7</button>
+        <button class="key" data-value="8">8</button>
+        <button class="key" data-value="9">9</button>
+        <button class="key operator" data-value="÷">÷</button>
+
+        <button class="key function" data-value="!">x!</button>
+        <button class="key" data-value="4">4</button>
+        <button class="key" data-value="5">5</button>
+        <button class="key" data-value="6">6</button>
+        <button class="key operator" data-value="×">×</button>
+        <button class="key operator" data-value="−">−</button>
+        <button class="key operator" data-value="+">+</button>
+        <button class="key equals" data-action="equals">=</button>
+
+        <button class="key fraction" data-value="1/">a/b</button>
+        <button class="key" data-value="1">1</button>
+        <button class="key" data-value="2">2</button>
+        <button class="key" data-value="3">3</button>
+        <button class="key" data-value="0">0</button>
+        <button class="key" data-value=".">.</button>
+      </div>
+      <p class="keyboard-hint">Keyboard enabled <span>·</span> Enter to calculate</p>
+    </section>
+  </main>
+  <div id="toast" class="toast" role="status"></div>
+  <script src="script.js"></script>
+</body>
+</html>
