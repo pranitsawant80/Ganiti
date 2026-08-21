@@ -3,6 +3,7 @@ const resultEl = document.querySelector('#result');
 const memoryStatusEl = document.querySelector('#memoryStatus');
 const angleStatusEl = document.querySelector('#angleStatus');
 const toastEl = document.querySelector('#toast');
+const themeToggleEl = document.querySelector('#themeToggle');
 
 let expression = '';
 let result = 0;
@@ -11,6 +12,17 @@ let angleMode = 'DEG';
 let history = [];
 let historyIndex = -1;
 let justCalculated = false;
+
+function setTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  const isLight = theme === 'light';
+  themeToggleEl.querySelector('.theme-icon').textContent = isLight ? '☾' : '☼';
+  themeToggleEl.querySelector('.theme-label').textContent = isLight ? 'DARK' : 'LIGHT';
+  themeToggleEl.title = `Switch to ${isLight ? 'dark' : 'light'} theme`;
+  themeToggleEl.setAttribute('aria-label', themeToggleEl.title);
+  document.querySelector('meta[name="theme-color"]').content = isLight ? '#e9eff2' : '#0b1423';
+  localStorage.setItem('ganiti-theme', theme);
+}
 
 const functions = { sin: Math.sin, cos: Math.cos, tan: Math.tan, asin: Math.asin, acos: Math.acos, atan: Math.atan, log: Math.log10, ln: Math.log, sqrt: Math.sqrt, cbrt: Math.cbrt, abs: Math.abs };
 const constants = { pi: Math.PI, e: Math.E };
@@ -142,6 +154,7 @@ document.querySelector('.utility-row').addEventListener('click', (event) => {
 });
 document.querySelector('.memory-row').addEventListener('click', (event) => memoryAction(event.target.closest('button')?.dataset.action));
 document.querySelector('#angleToggle').addEventListener('click', () => { angleMode = angleMode === 'DEG' ? 'RAD' : 'DEG'; updateDisplay(); });
+themeToggleEl.addEventListener('click', () => setTheme(document.documentElement.dataset.theme === 'light' ? 'dark' : 'light'));
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Enter' || event.key === '=') { event.preventDefault(); calculate(); }
   else if (event.key === 'Escape') clearAll();
@@ -150,4 +163,5 @@ document.addEventListener('keydown', (event) => {
   else if (event.key.toLowerCase() === 'y' && (event.ctrlKey || event.metaKey)) { event.preventDefault(); document.querySelector('[data-action="redo"]').click(); }
   else if (/^[0-9+\-*/().%^!]$/.test(event.key)) insert(event.key);
 });
+setTheme(localStorage.getItem('ganiti-theme') || 'dark');
 updateDisplay();

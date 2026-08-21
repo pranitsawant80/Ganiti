@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#101b2d">
-  <title>Orbit Calculator</title>
+  <meta name="theme-color" content="#0b1423">
+  <title>Ganiti</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -15,9 +15,14 @@
     <header class="app-header">
       <div>
         <p class="eyebrow">PRECISION TOOL / 01</p>
-        <h1>Orbit<span>.</span></h1>
+        <h1>Ganiti<span>.</span></h1>
       </div>
-      <div class="status-dot" title="Calculator ready"><span></span> READY</div>
+      <div class="header-actions">
+        <button class="theme-toggle" id="themeToggle" type="button" title="Switch to light theme" aria-label="Switch to light theme">
+          <span class="theme-icon" aria-hidden="true">☼</span><span class="theme-label">LIGHT</span>
+        </button>
+        <div class="status-dot" title="Calculator ready"><span></span> READY</div>
+      </div>
     </header>
 
     <section class="calculator" aria-label="Scientific calculator">
