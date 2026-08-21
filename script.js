@@ -20,7 +20,7 @@ function setTheme(theme) {
   themeToggleEl.querySelector('.theme-label').textContent = isLight ? 'DARK' : 'LIGHT';
   themeToggleEl.title = `Switch to ${isLight ? 'dark' : 'light'} theme`;
   themeToggleEl.setAttribute('aria-label', themeToggleEl.title);
-  document.querySelector('meta[name="theme-color"]').content = isLight ? '#e9eff2' : '#0b1423';
+  document.querySelector('meta[name="theme-color"]').content = isLight ? '#eee9df' : '#171c1e';
   localStorage.setItem('ganiti-theme', theme);
 }
 
