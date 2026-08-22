@@ -7,6 +7,7 @@ const themeToggleEl = document.querySelector('#themeToggle');
 const historyListEl = document.querySelector('#historyList');
 const historySearchEl = document.querySelector('#historySearch');
 const variableValueEl = document.querySelector('#variableValue');
+const keyHelpEl = document.querySelector('#keyHelp');
 
 let expression = '';
 let result = 0;
@@ -17,6 +18,43 @@ let historyIndex = -1;
 let justCalculated = false;
 let calculationHistory = JSON.parse(localStorage.getItem('ganiti-calculation-history') || '[]');
 let variables = JSON.parse(localStorage.getItem('ganiti-variables') || '{"x": 0, "y": 0}');
+
+const keyHelp = {
+  'sin(': 'Sine: use for angles in a right triangle or periodic wave calculations.',
+  'cos(': 'Cosine: use for angles in a right triangle or periodic wave calculations.',
+  'tan(': 'Tangent: use to find a side or angle from a right triangle.',
+  'log(': 'Common logarithm (base 10): use for powers of 10, such as decibels or pH.',
+  'ln(': 'Natural logarithm: use for continuous growth, decay, and exponential equations.',
+  clear: 'All clear: remove the current expression and reset the displayed result.',
+  backspace: 'Backspace: remove the last character from the current expression.',
+  '%': 'Percent: divide the value before it by 100, such as 15%.',
+  'asin(': 'Inverse sine: find an angle when you know a sine ratio.',
+  'acos(': 'Inverse cosine: find an angle when you know a cosine ratio.',
+  'atan(': 'Inverse tangent: find an angle when you know a tangent ratio.',
+  'sqrt(': 'Square root: find the number that multiplies by itself to make the input.',
+  'cbrt(': 'Cube root: find the number that multiplies by itself three times to make the input.',
+    'abs(': 'Absolute value: remove a number\'s sign and keep its distance from zero.',
+  '1/(': 'Reciprocal: calculate one divided by a value, such as 1/4.',
+  '^': 'Power: raise a number to an exponent, such as 2^3.',
+  mod: 'Remainder: find what is left after integer division, such as 17 mod 5.',
+  'π': 'Pi: use for circle calculations, including circumference and area.',
+  e: 'Euler\'s number: use in natural exponential growth and decay calculations.',
+  '(': 'Opening parenthesis: group part of an expression and control its order.',
+  ')': 'Closing parenthesis: finish a grouped expression or function input.',
+  '÷': 'Division: split a value into equal parts or find a rate.',
+  '!': 'Factorial: multiply a whole number by every positive whole number below it.',
+  '×': 'Multiplication: scale values or calculate the area of repeated equal groups.',
+  '−': 'Subtraction: find the difference between values or decrease a quantity.',
+  '+': 'Addition: combine values or totals.',
+  equals: 'Calculate: evaluate the expression and show the result.',
+  '1/': 'Fraction shortcut: start a reciprocal expression by inserting 1/.',
+  '.': 'Decimal point: enter a value with a fractional part, such as 3.14.'
+};
+
+function showKeyHelp(button) {
+  const key = button.dataset.action || button.dataset.value;
+  keyHelpEl.textContent = keyHelp[key] || 'Use this key as part of your calculation.';
+}
 
 function setTheme(theme) {
   document.documentElement.dataset.theme = theme;
@@ -209,6 +247,14 @@ document.querySelector('#keypad').addEventListener('click', (event) => {
   else if (button.dataset.action === 'clear') clearAll();
   else if (button.dataset.action === 'backspace') backspace();
   else insert(button.dataset.value);
+});
+document.querySelector('#keypad').addEventListener('mouseover', (event) => {
+  const button = event.target.closest('button');
+  if (button && !/^[0-9]$/.test(button.textContent.trim())) showKeyHelp(button);
+});
+document.querySelector('#keypad').addEventListener('focusin', (event) => {
+  const button = event.target.closest('button');
+  if (button && !/^[0-9]$/.test(button.textContent.trim())) showKeyHelp(button);
 });
 document.querySelector('.utility-row').addEventListener('click', (event) => {
   const action = event.target.closest('button')?.dataset.action;

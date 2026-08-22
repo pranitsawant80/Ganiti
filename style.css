@@ -91,6 +91,8 @@ h1 span { color: var(--coral); }
 .function { color: var(--function); font-size: 13px; }
 .constant { color: var(--yellow); }
 
+.key-help { min-height: 38px; margin-top: 10px; padding: 10px 12px; color: var(--muted); background: var(--display); border-left: 2px solid var(--cyan); font: 11px/1.5 "DM Mono", monospace; }
+
 .operator { color: var(--yellow); background: var(--operator-bg); }
 .control { color: var(--coral); background: var(--control-bg); }
 .equals { grid-column: span 2; color: var(--equals-ink); background: var(--cyan); font-size: 22px; }
