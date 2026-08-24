@@ -132,6 +132,7 @@
         <button class="tool-tab" data-tool="graph">Graph</button>
         <button class="tool-tab" data-tool="data">Data</button>
         <button class="tool-tab" data-tool="programmer">Programmer</button>
+        <button class="tool-tab" data-tool="ai">Ask AI</button>
       </div>
       <div class="tool-panel active" data-panel="explain"><p id="steps">Calculate an expression to see the working.</p></div>
       <div class="tool-panel" data-panel="convert">
@@ -142,6 +143,7 @@
       <div class="tool-panel" data-panel="graph"><div class="tool-form"><input id="graphFunction" value="x^2" placeholder="x^2, sin(x), ..."><button id="graphButton">Plot</button></div><canvas id="graphCanvas" width="720" height="260" aria-label="Function graph"></canvas></div>
       <div class="tool-panel" data-panel="data"><div class="tool-form"><input id="dataValues" placeholder="12, 15, 18, 20"><button id="statsButton">Analyze</button></div><output id="statsResult"></output><div class="tool-form matrix-form"><input id="matrixValues" placeholder="1 2; 3 4"><button id="matrixButton">Matrix determinant</button></div><output id="matrixResult"></output></div>
       <div class="tool-panel" data-panel="programmer"><div class="tool-form"><input id="programmerValue" type="number" placeholder="Decimal value"><button id="programmerButton">Convert bases</button></div><output id="programmerResult"></output></div>
+      <div class="tool-panel" data-panel="ai"><div class="tool-form"><input id="aiQuestion" type="text" placeholder="e.g. 15% of 200 plus the square root of 144"><button id="aiButton">Ask</button></div><output id="aiResult">Ask a math question in plain English. Requires the local AI backend to be running.</output></div>
     </section>
   </main>
   <div id="toast" class="toast" role="status"></div>

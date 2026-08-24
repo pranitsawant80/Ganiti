@@ -366,3 +366,40 @@ document.querySelector('#graphButton').addEventListener('click', () => {
   for (let pixel = 0; pixel <= canvas.width; pixel++) { const x = (pixel - canvas.width / 2) / 30; let y; try { y = evaluate(expressionInput.replace(/\bx\b/g, `(${x})`)); } catch { return; } const screenY = canvas.height / 2 - y * 30; if (pixel === 0) context.moveTo(pixel, screenY); else context.lineTo(pixel, screenY); }
   context.stroke(); context.strokeStyle = 'rgba(246,241,232,.3)'; context.beginPath(); context.moveTo(0, canvas.height / 2); context.lineTo(canvas.width, canvas.height / 2); context.moveTo(canvas.width / 2, 0); context.lineTo(canvas.width / 2, canvas.height); context.stroke();
 });
+
+const AI_ENDPOINT = 'http://localhost:5000/api/ask';
+
+document.querySelector('#aiButton').addEventListener('click', async () => {
+  const questionInput = document.querySelector('#aiQuestion');
+  const aiResultEl = document.querySelector('#aiResult');
+  const aiButton = document.querySelector('#aiButton');
+  const question = questionInput.value.trim();
+  if (!question) { showToast('Enter a question first'); return; }
+
+  aiButton.disabled = true;
+  aiButton.textContent = 'Thinking...';
+  aiResultEl.textContent = 'Asking the AI...';
+
+  try {
+    const response = await fetch(AI_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'The AI service failed.');
+    if (!data.expression) throw new Error(data.explanation || 'Could not turn that into a math expression.');
+
+    let value;
+    try { value = evaluate(autoCloseParens(data.expression)); }
+    catch { throw new Error('The AI returned an expression Ganiti could not evaluate: ' + data.expression); }
+
+    aiResultEl.textContent = (data.explanation ? data.explanation + ' ' : '') + 'Expression: ' + data.expression + '  ->  Result: ' + formatNumber(value);
+  } catch (error) {
+    aiResultEl.textContent = 'Error';
+    showToast(error.message);
+  } finally {
+    aiButton.disabled = false;
+    aiButton.textContent = 'Ask';
+  }
+});

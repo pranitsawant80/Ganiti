@@ -1,6 +1,6 @@
 # Ganiti
 
-Ganiti is a browser-based scientific calculator and math toolkit. It combines a fast expression calculator with reusable values, searchable history, graphing, conversions, finance, equations, data analysis, and programmer utilities. It has no build step, backend, or dependencies.
+Ganiti is a browser-based scientific calculator and math toolkit. It combines a fast expression calculator with reusable values, searchable history, graphing, conversions, finance, equations, data analysis, and programmer utilities. The core calculator and tools have no build step or backend. The optional **Ask AI** tab requires running a small local Python backend (see [Ask AI](#ask-ai-optional-backend) below).
 
 ## Features
 
@@ -29,6 +29,7 @@ Use the tabs below the calculator to access:
 - **Graph:** plot expressions using `x`, such as `x^2` or `sin(x)`
 - **Data:** calculate count, mean, median, minimum, maximum, and a 2 x 2 matrix determinant
 - **Programmer:** convert whole decimal numbers to binary, octal, and hexadecimal
+- **Ask AI:** type a math question in plain English; an AI backend translates it into a Ganiti expression, which Ganiti then computes exactly (requires the optional local backend below)
 
 ## Keyboard Controls
 
@@ -62,6 +63,28 @@ python -m http.server 8000
 ```
 
 Then open `http://localhost:8000`.
+
+## Ask AI (optional backend)
+
+The Ask AI tab sends your question to a small local Flask server, which asks an NVIDIA-hosted model to translate it into a Ganiti expression (e.g. "15% of 200 plus the square root of 144" -> `200*15% + sqrt(144)`). The AI never computes the final number itself — Ganiti's own expression evaluator does, so results stay exact. Your API key never touches the browser.
+
+1. Install dependencies:
+   ```bash
+   cd server
+   pip install -r requirements.txt
+   ```
+2. Provide your NVIDIA API key, either by copying `server/.env.example` to `server/.env` and filling it in, or by exporting it directly:
+   ```bash
+   export NVIDIA_API_KEY=your-key-here
+   ```
+3. Start the backend:
+   ```bash
+   python app.py
+   ```
+   This runs on `http://localhost:5000`.
+4. Serve or open `index.html` as usual. The Ask AI tab calls `http://localhost:5000/api/ask`.
+
+Without the backend running, every other tab still works normally — only Ask AI shows an error toast.
 
 ## Deployment
 
