@@ -1,43 +1,43 @@
 :root {
-  --ink: #f6f1e8;
-  --muted: #aeb5b5;
-  --panel: #252b2e;
-  --panel-light: #30383a;
-  --line: rgba(246, 241, 232, 0.16);
-  --cyan: #55c7b5;
-  --yellow: #f0bd62;
-  --coral: #e47b67;
-  --page: #171c1e;
-  --page-accent: rgba(85, 199, 181, 0.12);
-  --page-gradient: linear-gradient(135deg, #171c1e 0%, #20282a 54%, #292526 100%);
-  --display: #1b2123;
-  --key-hover: #3a4546;
-  --equals-ink: #132321;
-  --function: #d8dfdc;
-  --operator-bg: rgba(240, 189, 98, .12);
-  --control-bg: rgba(228, 123, 103, .12);
+  --ink: #f3f0f9;
+  --muted: #ab9fc2;
+  --panel: #241f2e;
+  --panel-light: #2f2740;
+  --line: rgba(243, 240, 249, 0.16);
+  --cyan: #a78bfa;
+  --yellow: #e0a5f0;
+  --coral: #f472b6;
+  --page: #14101c;
+  --page-accent: rgba(167, 139, 250, 0.12);
+  --page-gradient: linear-gradient(135deg, #14101c 0%, #1e1830 54%, #2b1f33 100%);
+  --display: #1a1526;
+  --key-hover: #3a2e52;
+  --equals-ink: #1c1030;
+  --function: #ddd6e8;
+  --operator-bg: rgba(224, 165, 240, .12);
+  --control-bg: rgba(244, 114, 182, .12);
   --shadow: rgba(0, 0, 0, .3);
 }
 
 [data-theme="light"] {
-  --ink: #202a2d;
-  --muted: #667276;
-  --panel: #fffdf8;
-  --panel-light: #e8e3d8;
-  --line: rgba(32, 42, 45, 0.16);
-  --cyan: #087f78;
-  --yellow: #996515;
-  --coral: #bd503e;
-  --page: #eee9df;
-  --page-accent: rgba(8, 127, 120, 0.1);
-  --page-gradient: linear-gradient(135deg, #eee9df 0%, #f7f3eb 54%, #e3ddd1 100%);
-  --display: #fffefa;
-  --key-hover: #d8e5e0;
-  --equals-ink: #f7fffb;
-  --function: #3f4d50;
-  --operator-bg: rgba(153, 101, 21, .11);
-  --control-bg: rgba(189, 80, 62, .1);
-  --shadow: rgba(53, 48, 37, .16);
+  --ink: #2a2038;
+  --muted: #6f6180;
+  --panel: #fdfbff;
+  --panel-light: #ece4f7;
+  --line: rgba(42, 32, 56, 0.16);
+  --cyan: #7c3aed;
+  --yellow: #a855f7;
+  --coral: #c026d3;
+  --page: #efe9f7;
+  --page-accent: rgba(124, 58, 237, 0.1);
+  --page-gradient: linear-gradient(135deg, #efe9f7 0%, #f7f2fc 54%, #e6dcf1 100%);
+  --display: #fefcff;
+  --key-hover: #e3d4f5;
+  --equals-ink: #fbf7ff;
+  --function: #4a3d5c;
+  --operator-bg: rgba(168, 85, 247, .11);
+  --control-bg: rgba(192, 38, 211, .1);
+  --shadow: rgba(42, 32, 56, .16);
 }
 
 * { box-sizing: border-box; }
