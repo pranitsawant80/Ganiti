@@ -1,3 +1,7 @@
+// Core calculator: DOM refs, state, display/history/memory/keypad/theme.
+// Depends on evaluate/formatNumber/autoCloseParens/constants from evaluator.js,
+// so evaluator.js must be loaded first.
+
 const expressionEl = document.querySelector('#expression');
 const resultEl = document.querySelector('#result');
 const memoryStatusEl = document.querySelector('#memoryStatus');
@@ -67,9 +71,6 @@ function setTheme(theme) {
   localStorage.setItem('ganiti-theme', theme);
 }
 
-const functions = { sin: Math.sin, cos: Math.cos, tan: Math.tan, asin: Math.asin, acos: Math.acos, atan: Math.atan, log: Math.log10, ln: Math.log, sqrt: Math.sqrt, cbrt: Math.cbrt, abs: Math.abs };
-const constants = { pi: Math.PI, e: Math.E, ans: 0 };
-
 function showToast(message) {
   toastEl.textContent = message;
   toastEl.classList.add('show');
@@ -108,11 +109,6 @@ function updateDisplay() {
   angleStatusEl.textContent = angleMode;
   document.querySelector('#angleToggle').textContent = angleMode;
 }
-function formatNumber(value) {
-  if (!Number.isFinite(value)) return 'Error';
-  if (Math.abs(value) < 1e-12) value = 0;
-  return Number(value.toPrecision(12)).toString();
-}
 function pushHistory(state) {
   history = history.slice(0, historyIndex + 1);
   history.push(state);
@@ -132,87 +128,7 @@ function insert(value) {
 }
 function clearAll() { expression = ''; result = 0; justCalculated = false; updateDisplay(); }
 function backspace() { expression = expression.slice(0, -1); justCalculated = false; updateDisplay(); }
-function factorial(value) {
-  if (value < 0 || !Number.isInteger(value) || value > 170) throw new Error('Invalid factorial');
-  let answer = 1;
-  for (let index = 2; index <= value; index++) answer *= index;
-  return answer;
-}
 
-function tokenize(input) {
-  const tokens = [];
-  let index = 0;
-  while (index < input.length) {
-    const rest = input.slice(index);
-    const number = rest.match(/^(?:\d+(?:\.\d*)?|\.\d+)/);
-    const name = rest.match(/^[a-zA-Zπ]+/);
-    if (/^\s/.test(rest)) { index++; continue; }
-    if (number) { tokens.push({ type: 'number', value: Number(number[0]) }); index += number[0].length; continue; }
-    if (name) { tokens.push({ type: 'name', value: name[0].toLowerCase().replace('π', 'pi') }); index += name[0].length; continue; }
-    if ('+-×÷*/^%!()'.includes(input[index])) { tokens.push({ type: 'operator', value: input[index] }); index++; continue; }
-    throw new Error('Unknown character');
-  }
-  return tokens;
-}
-const CONSTANT_NAMES = new Set(Object.keys(constants));
-function withImplicitMultiplication(tokens) {
-  const output = [];
-  for (const token of tokens) {
-    const previous = output[output.length - 1];
-    if (previous) {
-      const previousEndsValue = previous.type === 'number'
-        || (previous.type === 'name' && CONSTANT_NAMES.has(previous.value))
-        || (previous.type === 'operator' && (previous.value === ')' || previous.value === '!' || previous.value === '%'));
-      const currentStartsValue = token.type === 'number'
-        || (token.type === 'name' && token.value !== 'mod')
-        || (token.type === 'operator' && token.value === '(');
-      if (previousEndsValue && currentStartsValue) output.push({ type: 'operator', value: '*' });
-    }
-    output.push(token);
-  }
-  return output;
-}
-function evaluate(input) {
-  const tokens = withImplicitMultiplication(tokenize(input.replace(/−/g, '-').replace(/×/g, '*').replace(/÷/g, '/')));
-  let position = 0;
-  const peek = () => tokens[position];
-  const take = () => tokens[position++];
-  function primary() {
-    const token = take();
-    if (!token) throw new Error('Incomplete expression');
-    if (token.type === 'number') return token.value;
-    if (token.type === 'name') {
-      if (constants[token.value] !== undefined) return constants[token.value];
-      if (variables[token.value] !== undefined) return variables[token.value];
-      if (token.value === 'mod') throw new Error('mod needs a number on each side');
-      if (!functions[token.value] || peek()?.value !== '(') throw new Error('Unknown function');
-      take(); const value = expressionParser();
-      if (take()?.value !== ')') throw new Error('Missing )');
-      const radians = ['sin', 'cos', 'tan'].includes(token.value) ? (angleMode === 'DEG' ? value * Math.PI / 180 : value) : value;
-      let answer = functions[token.value](radians);
-      if (['asin', 'acos', 'atan'].includes(token.value) && angleMode === 'DEG') answer *= 180 / Math.PI;
-      return answer;
-    }
-    if (token.value === '(') { const value = expressionParser(); if (take()?.value !== ')') throw new Error('Missing )'); return value; }
-    if (token.value === '+' || token.value === '-') return token.value === '-' ? -primary() : primary();
-    throw new Error('Expected a number');
-  }
-  function power() { let value = primary(); if (peek()?.value === '^') { take(); value = value ** power(); } return value; }
-  function postfix() { let value = power(); while (peek()?.value === '!' || peek()?.value === '%') { const op = take().value; value = op === '!' ? factorial(value) : value / 100; } return value; }
-  function term() { let value = postfix(); while (peek() && ['*', '/', '×', '÷', 'mod'].includes(peek().value)) { const op = take().value; const next = postfix(); value = op === '*' || op === '×' ? value * next : op === 'mod' ? value % next : value / next; } return value; }
-  function expressionParser() { let value = term(); while (peek() && ['+', '-', '−'].includes(peek().value)) { const op = take().value; const next = term(); value = op === '+' ? value + next : value - next; } return value; }
-  const answer = expressionParser();
-  if (position < tokens.length) throw new Error('Check your expression');
-  return answer;
-}
-function autoCloseParens(input) {
-  let openCount = 0;
-  for (const char of input) {
-    if (char === '(') openCount++;
-    else if (char === ')') openCount--;
-  }
-  return openCount > 0 ? input + ')'.repeat(openCount) : input;
-}
 function calculate() {
   if (!expression) return;
   try {
@@ -312,94 +228,3 @@ document.addEventListener('keydown', (event) => {
 setTheme(localStorage.getItem('ganiti-theme') || 'dark');
 updateDisplay();
 renderCalculationHistory();
-
-document.querySelector('.tool-tabs').addEventListener('click', (event) => {
-  const tab = event.target.closest('.tool-tab');
-  if (!tab) return;
-  document.querySelectorAll('.tool-tab').forEach((item) => item.classList.toggle('active', item === tab));
-  document.querySelectorAll('.tool-panel').forEach((panel) => panel.classList.toggle('active', panel.dataset.panel === tab.dataset.tool));
-});
-function convertValue(value, from, to) {
-  if (from === to) return value;
-  const length = { m: 1, km: 1000, mi: 1609.344, ft: 0.3048 };
-  if (length[from] && length[to]) return value * length[from] / length[to];
-  if (from === 'c' && to === 'f') return value * 9 / 5 + 32;
-  if (from === 'f' && to === 'c') return (value - 32) * 5 / 9;
-  throw new Error('Choose compatible units');
-}
-
-document.querySelector('#convertButton').addEventListener('click', () => {
-  try { document.querySelector('#convertResult').textContent = formatNumber(convertValue(Number(document.querySelector('#convertValue').value), document.querySelector('#convertFrom').value, document.querySelector('#convertTo').value)); }
-  catch (error) { document.querySelector('#convertResult').textContent = error.message; }
-});
-
-document.querySelector('#financeButton').addEventListener('click', () => {
-  const principal = Number(document.querySelector('#financePrincipal').value), rate = Number(document.querySelector('#financeRate').value), years = Number(document.querySelector('#financeYears').value);
-  document.querySelector('#financeResult').textContent = principal > 0 && years >= 0 ? `Future value: ${formatNumber(principal * (1 + rate / 100) ** years)} | Interest: ${formatNumber(principal * ((1 + rate / 100) ** years - 1))}` : 'Enter a principal and duration.';
-});
-
-document.querySelector('#equationButton').addEventListener('click', () => {
-  const a = Number(document.querySelector('#equationA').value), b = Number(document.querySelector('#equationB').value), c = Number(document.querySelector('#equationC').value);
-  document.querySelector('#equationResult').textContent = a ? `x = ${formatNumber((c - b) / a)}` : 'a cannot be zero for a linear equation.';
-});
-
-document.querySelector('#statsButton').addEventListener('click', () => {
-  const values = document.querySelector('#dataValues').value.split(',').map(Number).filter(Number.isFinite).sort((a, b) => a - b);
-  if (!values.length) { document.querySelector('#statsResult').textContent = 'Enter comma-separated numbers.'; return; }
-  const mean = values.reduce((sum, value) => sum + value, 0) / values.length, middle = Math.floor(values.length / 2), median = values.length % 2 ? values[middle] : (values[middle - 1] + values[middle]) / 2;
-  document.querySelector('#statsResult').textContent = `Count: ${values.length} | Mean: ${formatNumber(mean)} | Median: ${formatNumber(median)} | Min: ${values[0]} | Max: ${values.at(-1)}`;
-});
-
-document.querySelector('#matrixButton').addEventListener('click', () => {
-  const rows = document.querySelector('#matrixValues').value.split(';').map((row) => row.trim().split(/\s+/).map(Number));
-  document.querySelector('#matrixResult').textContent = rows.length === 2 && rows.every((row) => row.length === 2 && row.every(Number.isFinite)) ? `Determinant: ${rows[0][0] * rows[1][1] - rows[0][1] * rows[1][0]}` : 'Enter a 2 x 2 matrix, for example: 1 2; 3 4';
-});
-
-document.querySelector('#programmerButton').addEventListener('click', () => {
-  const value = Number(document.querySelector('#programmerValue').value);
-  document.querySelector('#programmerResult').textContent = Number.isInteger(value) ? `BIN: ${value.toString(2)} | OCT: ${value.toString(8)} | HEX: ${value.toString(16).toUpperCase()}` : 'Enter a whole number.';
-});
-
-document.querySelector('#graphButton').addEventListener('click', () => {
-  const canvas = document.querySelector('#graphCanvas'), context = canvas.getContext('2d'), expressionInput = document.querySelector('#graphFunction').value;
-  context.clearRect(0, 0, canvas.width, canvas.height); context.strokeStyle = '#55c7b5'; context.beginPath();
-  for (let pixel = 0; pixel <= canvas.width; pixel++) { const x = (pixel - canvas.width / 2) / 30; let y; try { y = evaluate(expressionInput.replace(/\bx\b/g, `(${x})`)); } catch { return; } const screenY = canvas.height / 2 - y * 30; if (pixel === 0) context.moveTo(pixel, screenY); else context.lineTo(pixel, screenY); }
-  context.stroke(); context.strokeStyle = 'rgba(246,241,232,.3)'; context.beginPath(); context.moveTo(0, canvas.height / 2); context.lineTo(canvas.width, canvas.height / 2); context.moveTo(canvas.width / 2, 0); context.lineTo(canvas.width / 2, canvas.height); context.stroke();
-});
-
-const AI_ENDPOINT = 'http://localhost:5000/api/ask';
-
-document.querySelector('#aiButton').addEventListener('click', async () => {
-  const questionInput = document.querySelector('#aiQuestion');
-  const aiResultEl = document.querySelector('#aiResult');
-  const aiButton = document.querySelector('#aiButton');
-  const question = questionInput.value.trim();
-  if (!question) { showToast('Enter a question first'); return; }
-
-  aiButton.disabled = true;
-  aiButton.textContent = 'Thinking...';
-  aiResultEl.textContent = 'Asking the AI...';
-
-  try {
-    const response = await fetch(AI_ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question }),
-    });
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error || 'The AI service failed.');
-    if (!data.expression) throw new Error(data.explanation || 'Could not turn that into a math expression.');
-
-    let value;
-    try { value = evaluate(autoCloseParens(data.expression)); }
-    catch { throw new Error('The AI returned an expression Ganiti could not evaluate: ' + data.expression); }
-
-    aiResultEl.textContent = (data.explanation ? data.explanation + ' ' : '') + 'Expression: ' + data.expression + '  ->  Result: ' + formatNumber(value);
-  } catch (error) {
-    aiResultEl.textContent = 'Error';
-    showToast(error.message);
-  } finally {
-    aiButton.disabled = false;
-    aiButton.textContent = 'Ask';
-  }
-});

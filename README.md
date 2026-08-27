@@ -92,4 +92,4 @@ Ganiti is a static website. Deploy the project folder to any static hosting serv
 
 - `index.html` for the page structure
 - `style.css` for layout and themes
-- `script.js` for calculator behavior
+- `js/config.js`, `js/evaluator.js`, `js/calculator.js`, `js/tools.js`, `js/ai.js` for calculator behavior — set `AI_API_BASE` in `js/config.js` to your deployed API domain if the API is hosted separately from the static site
