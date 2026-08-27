@@ -15,9 +15,7 @@ if not NVIDIA_API_KEY:
 
 client = OpenAI(base_url="https://integrate.api.nvidia.com/v1", api_key=NVIDIA_API_KEY)
 
-SYSTEM_PROMPT = """detailed thinking off
-
-You are a math-expression translator for the Ganiti calculator. Given a natural-language question, respond with ONLY a single raw JSON object (no Markdown fences, no extra text) of the exact shape:
+SYSTEM_PROMPT = """You are a math-expression translator for the Ganiti calculator. Given a natural-language question, respond with ONLY a single raw JSON object (no Markdown fences, no extra text) of the exact shape:
 {"expression": "<expression>", "explanation": "<short explanation>"}
 
 Rules for "expression":
@@ -65,6 +63,10 @@ def ask():
             top_p=0.95,
             max_tokens=2048,
             stream=False,
+            # nemotron-3.5 ignores plain "detailed thinking off" text and burns the
+            # whole token budget on a reasoning monologue, truncating the JSON. This
+            # is the real switch that turns thinking off for this model.
+            extra_body={"chat_template_kwargs": {"enable_thinking": False}},
         )
     except Exception:
         return jsonify({"error": "The AI service could not be reached. Try again shortly."}), 502

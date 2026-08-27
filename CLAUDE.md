@@ -41,6 +41,7 @@ All calculator logic lives in this single file — no modules, no bundler.
 A single-route Flask app: `POST /api/ask`, calling an NVIDIA-hosted OpenAI-compatible model.
 
 - The system prompt forces raw JSON output: `{"expression", "explanation"}`.
+- The request passes `extra_body={"chat_template_kwargs": {"enable_thinking": False}}` — nemotron-3.5 ignores plain "thinking off" prompt text and otherwise spends the whole token budget on a reasoning monologue, truncating the JSON.
 - `extract_json()` strips markdown fences before parsing the model's response.
 - Requires `NVIDIA_API_KEY` (see `server/.env.example`).
 - CORS is wide open (`origins: "*"`) — this is explicitly local-dev only and **must be pinned** before any real deployment.

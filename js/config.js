@@ -4,7 +4,14 @@
 // Auto-detects local dev (localhost/127.0.0.1) so `python -m http.server` and
 // double-clicking index.html keep working against the local Flask server.
 
-const AI_API_BASE = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
+const IS_LOCAL_DEV =
+  location.protocol === 'file:' ||
+  location.hostname === '' ||
+  location.hostname === 'localhost' ||
+  location.hostname === '127.0.0.1' ||
+  location.hostname === '[::1]';
+
+const AI_API_BASE = IS_LOCAL_DEV
   ? 'http://localhost:5000'
   : 'https://REPLACE-WITH-YOUR-DEPLOYED-API-DOMAIN';
 
