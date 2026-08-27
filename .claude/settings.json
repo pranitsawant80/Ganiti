@@ -3,8 +3,7 @@
     "deny": [
       "Read(server/.env)",
       "Read(.env)",
-      "Read(**/.env)",
-      "Read(CLAUDE.md)"
+      "Read(**/.env)"
     ]
   }
 }
