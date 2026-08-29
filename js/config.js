@@ -13,6 +13,6 @@ const IS_LOCAL_DEV =
 
 const AI_API_BASE = IS_LOCAL_DEV
   ? 'http://localhost:5000'
-  : 'https://REPLACE-WITH-YOUR-DEPLOYED-API-DOMAIN';
+  : 'https://mgetdyieqd.execute-api.us-east-1.amazonaws.com';
 
 const AI_ENDPOINT = `${AI_API_BASE}/api/ask`;
