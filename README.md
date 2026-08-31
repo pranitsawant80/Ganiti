@@ -52,44 +52,25 @@ Ganiti stores theme choice, calculation history, and `x`/`y` values in `localSto
 
 The graph, converter, finance, equation, data, and programmer tools are intentionally lightweight browser utilities. They do not replace specialist numerical, accounting, or engineering software for high-precision work.
 
-## Run Locally
+## Running and deploying
 
-No dependencies are required. Open `index.html` directly in a browser, or serve the folder with any static web server.
+The same files at the repo root run both locally and in the cloud — `js/config.js`
+picks the Ask AI API URL by hostname. Two guides:
 
-For example, with Python installed:
+- **[docs/running-locally.md](docs/running-locally.md)** — open `index.html` or
+  `python -m http.server`, plus the optional local Flask backend for Ask AI.
+- **[docs/deploying-to-cloud.md](docs/deploying-to-cloud.md)** — static site to
+  GitHub Pages / Netlify / S3, and the Ask AI API to AWS Lambda (root
+  `Dockerfile`) or another container host, including the `AI_API_BASE` and CORS
+  changes you must make.
 
-```bash
-python -m http.server 8000
-```
+The core calculator and every tool except Ask AI need no backend. Without the
+backend running, only Ask AI shows an error toast.
 
-Then open `http://localhost:8000`.
+### How Ask AI works
 
-## Ask AI (optional backend)
-
-The Ask AI tab sends your question to a small local Flask server, which asks an NVIDIA-hosted model to translate it into a Ganiti expression (e.g. "15% of 200 plus the square root of 144" -> `200*15% + sqrt(144)`). The AI never computes the final number itself — Ganiti's own expression evaluator does, so results stay exact. Your API key never touches the browser.
-
-1. Install dependencies:
-   ```bash
-   cd server
-   pip install -r requirements.txt
-   ```
-2. Provide your NVIDIA API key, either by copying `server/.env.example` to `server/.env` and filling it in, or by exporting it directly:
-   ```bash
-   export NVIDIA_API_KEY=your-key-here
-   ```
-3. Start the backend:
-   ```bash
-   python app.py
-   ```
-   This runs on `http://localhost:5000`.
-4. Serve or open `index.html` as usual. The Ask AI tab calls `http://localhost:5000/api/ask`.
-
-Without the backend running, every other tab still works normally — only Ask AI shows an error toast.
-
-## Deployment
-
-Ganiti is a static website. Deploy the project folder to any static hosting service such as GitHub Pages, Netlify, Vercel, or Cloudflare Pages. The main files are:
-
-- `index.html` for the page structure
-- `style.css` for layout and themes
-- `js/config.js`, `js/evaluator.js`, `js/calculator.js`, `js/tools.js`, `js/ai.js` for calculator behavior — set `AI_API_BASE` in `js/config.js` to your deployed API domain if the API is hosted separately from the static site
+The Ask AI tab sends your question to a small Flask server, which asks an
+NVIDIA-hosted model to translate it into a Ganiti expression (e.g. "15% of 200
+plus the square root of 144" -> `200*15% + sqrt(144)`). The AI never computes the
+final number itself — Ganiti's own expression evaluator does, so results stay
+exact. Your API key never touches the browser.
