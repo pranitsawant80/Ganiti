@@ -3,7 +3,7 @@
 Ganiti is a browser-based scientific calculator and math toolkit. It combines a fast expression calculator with reusable values, searchable history, graphing, conversions, finance, equations, data analysis, and programmer utilities. The core calculator and tools have no build step or backend. The optional **Ask AI** tab requires running a small local Python backend (see [Ask AI](#ask-ai-optional-backend) below).
 
 ## Features
-
+ 
 ### Scientific calculator 
 
 - Arithmetic with parentheses, percentages, modulo, powers, and factorials
